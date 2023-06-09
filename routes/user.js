@@ -53,6 +53,7 @@ router.post("/login", async (req, res) => {
 router.delete("/:id", auth_middleware, async (req, res) => {
   let id = req.params.id;
 
+
   let user = await User.findByIdAndRemove(id);
   if (user) {
     res.status(200).send({ sucess: true, message: "use deleted success" });
@@ -79,6 +80,8 @@ router.get("/me", auth_middleware, async (req, res) => {
     let data = await req.user
   res.status(200).send({success:true , data: data});
 });
+
+
 router.get("/", auth_middleware, async (req, res) => {
   let users = await User.find({}).select("-passwordHash");
   if (users) {

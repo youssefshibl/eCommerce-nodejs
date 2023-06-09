@@ -1,0 +1,131 @@
+{
+    "info": {
+        "name": "cart",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "add to cart",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/cart/addtocart",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "cart",
+                        "addtocart"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NDdjN2ViMDBkYTE1YjkwYTM4NmE4MTIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjg2MDU2MzUwLCJleHAiOjE2ODYxNDI3NTB9.WLRjYyVRBr0pLGUv8pkd2AofdrD4NEXlAKK-fZwjUj8"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"product_id\": \"647cfbe2a7fa0882d0351d3a\"\n}"
+                }
+            }
+        },
+        {
+            "name": "delete from cart",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/cart/deletefromcart",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "cart",
+                        "deletefromcart"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NDdjN2ViMDBkYTE1YjkwYTM4NmE4MTIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjg2MDU2MzUwLCJleHAiOjE2ODYxNDI3NTB9.WLRjYyVRBr0pLGUv8pkd2AofdrD4NEXlAKK-fZwjUj8"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"product_id\": \"647cfbe2a7fa0882d0351d3a\"\n}"
+                }
+            }
+        },
+        {
+            "name": "clear cart",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/cart/clearcart",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "cart",
+                        "clearcart"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NDdjN2ViMDBkYTE1YjkwYTM4NmE4MTIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjg2MDU2MzUwLCJleHAiOjE2ODYxNDI3NTB9.WLRjYyVRBr0pLGUv8pkd2AofdrD4NEXlAKK-fZwjUj8"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "get all product from cart",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/cart/cartallproduct",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "cart",
+                        "cartallproduct"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                },
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NDdjN2ViMDBkYTE1YjkwYTM4NmE4MTIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjg2MDU2MzUwLCJleHAiOjE2ODYxNDI3NTB9.WLRjYyVRBr0pLGUv8pkd2AofdrD4NEXlAKK-fZwjUj8"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,78 @@
+{
+    "info": {
+        "name": "categories",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "make new category",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/categories/addcategory",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "categories",
+                        "addcategory"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"name\": \"test one\",\n  \"icon\": \"https://illustoon.com/photo/7826.png\"\n}"
+                }
+            }
+        },
+        {
+            "name": "get all categories",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/categories/getallcategories",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "categories",
+                        "getallcategories"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                }
+            }
+        },
+        {
+            "name": "delete category",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/categories/647cc6d6e1b9c5669d64e485",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "categories",
+                        "647cc6d6e1b9c5669d64e485"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                }
+            }
+        }
+    ]
+}

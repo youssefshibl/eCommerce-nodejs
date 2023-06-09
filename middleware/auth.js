@@ -18,7 +18,11 @@ let auth_middle_ware = async function (req, res, next) {
   try {
     const authnToken = jwt.verify(token, secret);
     let id = authnToken.userID;
-    let user = await User.findById(id).exec();
+    let user = await User.findById(id).select("name email").exec();
+    if (!user) {
+      res.status(400).send({ success: false, message: "user not found" });
+      return;
+    }
     req.user = user;
     next();
   } catch (err) {

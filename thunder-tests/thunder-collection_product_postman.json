@@ -1,0 +1,235 @@
+{
+    "info": {
+        "name": "product",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "createproduct",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/product/addproduct",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "product",
+                        "addproduct"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                },
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "name",
+                            "value": "without",
+                            "type": "default"
+                        },
+                        {
+                            "key": "price",
+                            "value": "650",
+                            "type": "default"
+                        },
+                        {
+                            "key": "description",
+                            "value": "without description",
+                            "type": "default"
+                        },
+                        {
+                            "key": "category_id",
+                            "value": "647ccb5743dfcc9cc6a7e4fe",
+                            "type": "default"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "edit product",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/product/updateproduct/647cfa9804aee20cfd59eeed",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "product",
+                        "updateproduct",
+                        "647cfa9804aee20cfd59eeed"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                },
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "name",
+                            "value": "pc1",
+                            "disabled": true,
+                            "type": "default"
+                        },
+                        {
+                            "key": "price",
+                            "value": "652",
+                            "disabled": true,
+                            "type": "default"
+                        },
+                        {
+                            "key": "description",
+                            "value": "without description3",
+                            "type": "default"
+                        },
+                        {
+                            "key": "category_id",
+                            "value": "647ccb5243dfcc9cc6a7e4fc",
+                            "disabled": true,
+                            "type": "default"
+                        },
+                        {
+                            "key": "image",
+                            "src": "c:\\Users\\st\\Desktop\\ssid-WRAuGenbv-1.jpg",
+                            "disabled": true,
+                            "type": "file"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "get all products",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/product/testo",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "product",
+                        "testo"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                },
+                "header": [
+                    {
+                        "key": "Cookie",
+                        "value": "",
+                        "disabled": true
+                    }
+                ]
+            }
+        },
+        {
+            "name": "test",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/product/productcount",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "product",
+                        "productcount"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                }
+            }
+        },
+        {
+            "name": "delete product by id",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/product/getallproducts?categories=647ccb5243dfcc9cc6a7e4fc,647ccb5743dfcc9cc6a7e4fe",
+                    "query": [
+                        {
+                            "key": "categories",
+                            "value": "647ccb5243dfcc9cc6a7e4fc,647ccb5743dfcc9cc6a7e4fe"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "product",
+                        "getallproducts"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                },
+                "body": {
+                    "mode": "urlencoded",
+                    "urlencoded": [
+                        {
+                            "key": "categories",
+                            "value": "devices",
+                            "disabled": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "get product by id",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/product/getproduct/647cfb5312b816d9860ea06f",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "product",
+                        "getproduct",
+                        "647cfb5312b816d9860ea06f"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                }
+            }
+        },
+        {
+            "name": "count products",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:3000/ecommerce/v1/product/getproduct/647cfb5312b816d9860ea06f",
+                    "path": [
+                        "ecommerce",
+                        "v1",
+                        "product",
+                        "getproduct",
+                        "647cfb5312b816d9860ea06f"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000"
+                }
+            }
+        }
+    ]
+}
