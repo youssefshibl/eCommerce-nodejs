@@ -6,6 +6,7 @@ const auth_middleware = require("../middleware/auth");
 const email_verify_middleware = require("../middleware/verify_email");
 const User = require("../models/User");
 const EmailVerify = require("../models/EmailVerifyCode");
+const mongoose = require("mongoose")
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -48,7 +49,12 @@ router.post("/login", async (req, res) => {
   const secret = process.env.secret;
 
   if (!user) {
-    res.status(400).send({success : false , message: "email or password may be not correrct"});
+    res
+      .status(400)
+      .send({
+        success: false,
+        message: "email or password may be not correrct",
+      });
   }
 
   if (user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
@@ -62,14 +68,22 @@ router.post("/login", async (req, res) => {
     );
     res.status(200).send({ user: user.email, token: token });
   } else {
-    res.status(400).send({success : false , message: "email or password may be not correrct"});
+    res
+      .status(400)
+      .send({
+        success: false,
+        message: "email or password may be not correrct",
+      });
   }
 });
 
 // delete user
 router.delete("/:id", auth_middleware, async (req, res) => {
   let id = req.params.id;
-
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(400).send({ success: false, message: "this id is not valid" });
+    return;
+  }
   let user = await User.findByIdAndRemove(id);
   if (user) {
     res.status(200).send({ sucess: true, message: "use deleted success" });
@@ -82,6 +96,11 @@ router.delete("/:id", auth_middleware, async (req, res) => {
 
 router.get("/getuser/:id", auth_middleware, async (req, res) => {
   let id = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(400).send({ success: false, message: "this id is not valid" });
+    return;
+  }
+
   let user = await User.findById(req.params.id).select("-passwordHash");
   console.log(user);
   if (user) {

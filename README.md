@@ -7,7 +7,7 @@
 * cart
 * order
 * product
-* email verifty
+* email verification
 
 ## 🥽 User
 
@@ -41,8 +41,13 @@
   "message": "this email is exits"
 }
 ```
-`post` method `users/login` login `(jwt auth)`
-
+📝 `post` method `users/login` login `(jwt auth)`
+```json
+{
+  "email": "youssef1@gmail.com",
+  "password": "1234565"
+}
+```
 ✔️ make login successfuly
 ```json
 {
@@ -57,4 +62,109 @@
   "message": "email or password may be not correrct"
 }
 ```
+📝 `get` method `users/getuser/:id` should be `admin` & `auth` get all info of user by id 
+✔️ make  successfuly
+```jons
+{
+  "sucess": true,
+  "user": {
+    "_id": "6491cb7b71c6d222c8abf2fe",
+    "name": "youssef1",
+    "email": "youssef1@gmail.com",
+    "email_verify": false,
+    "isAdmin": false,
+    "street": "",
+    "apartment": "",
+    "zip": "",
+    "city": "",
+    "country": "",
+    "__v": 0
+  }
+}
+```
+❌ type of error can maked 
+```json 
+{
+  "sucess": false,
+  "message": "user not found"
+}
+```
+```json 
+{
+  "success": false,
+  "message": "this id is not valid"
+}
+```
+📝 `get` method `users/me` get info of me 
+
+✔️ make successfuly
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "6491cb7b71c6d222c8abf2fe",
+    "name": "youssef1",
+    "email": "youssef1@gmail.com"
+  }
+}
+```
+❌ type of error can maked 
+```json
+{
+  "success": false,
+  "message": "you should verifyt you acount",
+  "code": 111
+}
+```
+📝 `delete` method `users/:id` should be `admin` & `auth` delete user  by id 
+✔️ make  successfuly
+```jons
+{
+  "sucess": true,
+  "message": "use deleted success"
+}
+```
+❌ type of error can maked 
+```json 
+{
+  "sucess": false,
+  "message": "user not found"
+}
+```
+```json 
+{
+  "success": false,
+  "message": "this id is not valid"
+}
+```
+📝 `get` method `users/resendcode` send code of verification to your mail box
+✔️ make  successfuly
+```json
+{
+  "success": true,
+  "message": "check you email we send code to youssef1@gmail.com"
+}
+```
+📝 `post` method `users/verifyemail` send code to verify you email
+✔️ make  successfuly
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "6491a75086a7b44c5ae9d15f",
+    "name": "youssef1",
+    "email": "youssef1@gmail.com",
+    "email_verify": true,
+    "isAdmin": false,
+    "street": "",
+    "apartment": "",
+    "zip": "",
+    "city": "",
+    "country": "",
+    "__v": 0
+  }
+}
+```
+
+
 

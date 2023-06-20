@@ -20,7 +20,7 @@ let auth_middle_ware = async function (req, res, next) {
     let id = authnToken.userID;
     let user = await User.findById(id).select("name email").exec();
     if (!user) {
-      res.status(400).send({ success: false, message: "user not found" });
+      res.status(400).send({ success: false, message: "this token for deleted user" });
       return;
     }
     req.user = user;
