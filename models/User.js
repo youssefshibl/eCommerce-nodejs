@@ -4,10 +4,13 @@ const userSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
+    min: 6,
+    max: 200,
   },
   email: {
     type: String,
     required: true,
+    match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
   },
   passwordHash: {
     type: String,
@@ -16,30 +19,12 @@ const userSchema = mongoose.Schema({
   email_verify: {
     type: Boolean,
     default: false,
+    required: true,
   },
   isAdmin: {
     type: Boolean,
     default: false,
-  },
-  street: {
-    type: String,
-    default: "",
-  },
-  apartment: {
-    type: String,
-    default: "",
-  },
-  zip: {
-    type: String,
-    default: "",
-  },
-  city: {
-    type: String,
-    default: "",
-  },
-  country: {
-    type: String,
-    default: "",
+    required: false,
   },
 });
 

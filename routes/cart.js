@@ -3,6 +3,7 @@ const router = express.Router();
 const auth_middleware = require("../middleware/auth");
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
+const address = require("../models/Address");
 const mongoose = require("mongoose");
 
 router.post("/addtocart", auth_middleware, async (req, res) => {

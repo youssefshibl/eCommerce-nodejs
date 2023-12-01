@@ -63,6 +63,7 @@
 }
 ```
 📝 `get` method `users/getuser/:id` should be `admin` & `auth` get all info of user by id 
+
 ✔️ make  successfuly
 ```jons
 {
@@ -117,6 +118,7 @@
 }
 ```
 📝 `delete` method `users/:id` should be `admin` & `auth` delete user  by id 
+
 ✔️ make  successfuly
 ```jons
 {
@@ -146,6 +148,7 @@
 }
 ```
 📝 `post` method `users/verifyemail` send code to verify you email
+
 ✔️ make  successfuly
 ```json
 {

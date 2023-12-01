@@ -11,6 +11,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     let newfilename = `product-image-${Date.now()}-${file.originalname}`;
+    req.image_saved_name = newfilename ;
     cb(null, newfilename); // Use the original file name as the filename
   },
 });
@@ -18,6 +19,7 @@ const upload = multer({ storage: storage });
 
 // add product
 router.post("/addproduct", upload.single("image"), async (req, res) => {
+  debugger ;
   let file = req.file;
   let name = req.body.name;
   let description = req.body.description;
@@ -34,7 +36,7 @@ router.post("/addproduct", upload.single("image"), async (req, res) => {
   let product = new Product({
     name: name,
     description: description,
-    image: file ? file.fieldname : null,
+    image: file ? req.image_saved_name : null,
     price: price,
     category: category_id,
   });
