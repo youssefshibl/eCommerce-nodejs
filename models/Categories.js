@@ -5,10 +5,19 @@ const categorySchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  icon: {
+  description: {
+    type: mongoose.Schema.Types.Mixed,
+    default: null,
+  },
+  image: {
     type: String,
+    default: "",
+  },
+  parent: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    default: null,
   },
 });
-
 
 module.exports = mongoose.model("Category", categorySchema);

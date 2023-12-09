@@ -5,10 +5,18 @@ const payment = mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "User",
   },
-  method: String,
-  amount: String,
-  status: Boolean,
+  payment_type: {
+    type: mongoose.Types.ObjectId,
+    ref: "PaymentType",
+  },
+  is_default: {
+    type: Boolean,
+    default: false,
+  },
+  expiry_date: {
+    type: Date,
+    default: null,
+  },
 });
 
 module.exports = mongoose.model("Payment", payment);
-

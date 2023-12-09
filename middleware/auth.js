@@ -8,7 +8,11 @@ let auth_middle_ware = async function (req, res, next) {
   let method = req.method;
   const secret = process.env.secret;
 
-  const token = req.headers["authorization"];
+  let token = req.headers["authorization"];
+  // seperate token from bearer
+  if (token && token.startsWith("Bearer ")) {
+    token = token.slice(7, token.length);
+  }
 
   if (!token) {
     return res
