@@ -78,10 +78,28 @@ router.post("/login", async (req, res) => {
   return await UserControll.login(req, res);
 });
 
+// delete account
+/**
+ * @swagger
+ * /users/deleteaccount:
+ *   delete:
+ *     tags:
+ *       - User
+ *     description: Use to delete a user account
+ *     responses:
+ *      '200':
+ *        description: A successful response
+ *
+ */
+
+router.delete("/deleteaccount", auth_middleware, async (req, res) => {
+  return await UserControll.deleteAccount(req, res);
+});
+
 // delete user
 /**
  * @swagger
- * /users/{id}:
+ * /users/deleteuser/{id}:
  *   delete:
  *     tags:
  *       - User
@@ -98,7 +116,7 @@ router.post("/login", async (req, res) => {
  *        description: A successful response
  *
  */
-router.delete("/:id", auth_middleware, isAdmin, async (req, res) => {
+router.delete("/deleteuser/:id", auth_middleware, isAdmin, async (req, res) => {
   return await UserControll.deleteUser(req, res);
 });
 

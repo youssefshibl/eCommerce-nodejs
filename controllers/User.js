@@ -9,16 +9,15 @@ const EmailVerify = require("../models/EmailVerifyCode");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
   auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAILPASSWORD,
-  },
-  tls: {
-    rejectUnauthorized: false,
+    user: process.env.User,
+    pass: process.env.Pass,
   },
 });
 const crypto = require("crypto");
+const EmailVerifyCode = require("../models/EmailVerifyCode");
 
 async function register(req, res) {
   // check if user send all data
@@ -72,6 +71,28 @@ async function register(req, res) {
 
   if (!user) return res.status(404).send("User cannot be created");
 
+  let randomNum = Math.floor(Math.random() * 1000000)
+    .toString()
+    .padStart(6, "0");
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: req.body.email,
+    subject: "verify you email",
+    html: htmlTemplate(randomNum),
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // insert in emailverfication
+      EmailVerifyCode.create({
+        user_id: user.id,
+        code: randomNum,
+      });
+    }
+  });
   // geneate jwt token
   const secret = process.env.secret;
   // expire after 1 week
@@ -117,14 +138,23 @@ async function login(req, res) {
       { expiresIn: "1d" }
     );
     res.status(200).send({ user: user.email, token: token });
-
   } else {
     res.status(400).send({
       success: false,
       message: "email or password may be not correrct",
     });
   }
-  return
+  return;
+}
+
+async function deleteAccount(req,res){
+  let user_id = req.user.id;
+  let user = await User.findByIdAndRemove(user_id);
+  if(user){
+    res.status(200).send({success:true,message:"user deleted success"});
+  }else{
+    res.status(400).send({success:false,message:"user not found"});
+  }
 }
 
 async function deleteUser(req, res) {
@@ -182,7 +212,7 @@ async function resendCode(req, res) {
     from: process.env.EMAIL,
     to: email,
     subject: "verify you email",
-    html: `the code to verfiy is ${randomNum}`,
+    html: htmlTemplate(randomNum),
   };
   // check first if this user try to send before or this is first one
   let old_berify = await EmailVerify.findOne({ user_id: user_id });
@@ -215,8 +245,23 @@ async function resendCode(req, res) {
 
 async function verifyEmail(req, res) {
   let code = req.body.code;
+
+  if (!code) {
+    res.status(400).send({
+      success: false,
+      message: "code is required",
+    });
+    return;
+  }
+
   let verify_email = await EmailVerify.findOne({ user_id: req.user.id });
-  console.log(code, "   ", verify_email.code, " ", req.user.id);
+  if (!verify_email) {
+    res.status(400).send({
+      success: false,
+      message: "you not send code before",
+    });
+    return;
+  }
   if (code == verify_email.code) {
     let user = await User.findByIdAndUpdate(
       req.user.id,
@@ -232,6 +277,7 @@ async function verifyEmail(req, res) {
       message: "verified code is not correct",
     });
   }
+  return ;
 }
 
 async function isPasswordPwned(password) {
@@ -273,6 +319,17 @@ function extractCountFromHashes(hashes, tail) {
   }
   return 0;
 }
+function htmlTemplate(code) {
+  return `
+  <div style="background-color: #f1f1f1; padding: 30px;">
+  <div style="background-color: #fff; padding: 20px; max-width: 500px; margin: auto;">
+    <h1 style="text-align: center;">Verify your email</h1>
+    <p style="text-align: center;">To verify your email, please use the following code:</p>
+    <h2 style="text-align: center;">${code}</h2>
+  </div>
+  </div>
+  `;
+}
 
 module.exports = {
   register,
@@ -283,4 +340,5 @@ module.exports = {
   getAllUser,
   resendCode,
   verifyEmail,
+  deleteAccount
 };
