@@ -10,6 +10,10 @@ const order = mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Payment",
     },
+    address: {
+      type: mongoose.Types.ObjectId,
+      ref: "Address",
+    },
     products: [
       {
         product_id: {
@@ -32,4 +36,3 @@ const order = mongoose.Schema(
 );
 
 module.exports = mongoose.model("Order", order);
-

@@ -9,13 +9,13 @@ const payment = mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "PaymentType",
   },
-  is_default: {
-    type: Boolean,
-    default: false,
+  amount: {
+    type: Number,
+    default: 0,
   },
-  expiry_date: {
-    type: Date,
-    default: null,
+  status: {
+    type: String,
+    default: "",
   },
 });
 

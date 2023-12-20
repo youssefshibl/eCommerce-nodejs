@@ -30,7 +30,7 @@ let auth_middle_ware = async function (req, res, next) {
     req.user = user;
     next();
   } catch (err) {
-    res.status(400).send({ success: false, message: "toke is not valid" });
+    res.status(400).send({ success: false, message: "token is not valid" });
   }
 };
 

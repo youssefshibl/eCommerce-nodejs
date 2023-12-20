@@ -1,173 +1,92 @@
 ![background](https://github.com/youssefshibl/eCommerce-nodejs/assets/63800183/c3402a1f-8653-4b14-9e87-b2adec4426de)
 
-# 🛒 Ecommerce system API using Express js + Mongoose
+# 🛒 Ecommerce system API using Express js + Mongoose + Swagger
 
 ## 🐸 Features
-* jwt auth
-* cart
-* order
-* product
+*  user authentication (jwt)
 * email verification
+* user address
+* categories
+* products
+* email verification
+* cart
+* orders
+* payment
 
-## 🥽 User
+---
+## Database Schema
+![Screenshot from 2023-12-15 16-10-00](https://github.com/youssefshibl/eCommerce-nodejs/assets/63800183/d16bb239-9305-4611-9132-e27e76ac45ec)
 
-📝 `post` method `users/register`  make new user 
-```json 
-{
-  "name":"youssef1",
-  "email":"youssef1@gmail.com",
-  "password":"123456",
-  "phone":"01125152"
-}
-```
-✔️ make user successfuly
-```json 
-{
-  "name": "youssef1",
-  "email": "youssef1@gmail.com",
-  "email_verify": false,
-  "isAdmin": false,
-  "street": "",
-  "apartment": "",
-  "zip": "",
-  "city": "",
-  "country": "",
-}
-```
-❌ type of error can maked 
-```json 
-{
-  "success": false,
-  "message": "this email is exits"
-}
-```
-📝 `post` method `users/login` login `(jwt auth)`
-```json
-{
-  "email": "youssef1@gmail.com",
-  "password": "1234565"
-}
-```
-✔️ make login successfuly
-```json
-{
-  "user": "youssef1@gmail.com",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NDkxYTc1MDg2YTdiNDRjNWFlOWQxNWYiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjg3MjY3NTAyLCJleHAiOjE2ODczNTM5MDJ9.gcBOg7C1Axh-DrA4GboyNXkuBr0PmpjslyS3iPN7hco"
-}
-```
-❌ type of error can maked 
-```json
-{
-  "success": false,
-  "message": "email or password may be not correrct"
-}
-```
-📝 `get` method `users/getuser/:id` should be `admin` & `auth` get all info of user by id 
+i know that mongodb is not a relational database but i made it like this to make it easy to understand
+---
 
-✔️ make  successfuly
-```jons
-{
-  "sucess": true,
-  "user": {
-    "_id": "6491cb7b71c6d222c8abf2fe",
-    "name": "youssef1",
-    "email": "youssef1@gmail.com",
-    "email_verify": false,
-    "isAdmin": false,
-    "street": "",
-    "apartment": "",
-    "zip": "",
-    "city": "",
-    "country": "",
-    "__v": 0
-  }
-}
-```
-❌ type of error can maked 
-```json 
-{
-  "sucess": false,
-  "message": "user not found"
-}
-```
-```json 
-{
-  "success": false,
-  "message": "this id is not valid"
-}
-```
-📝 `get` method `users/me` get info of me 
+### 🐸 User API
+![Screenshot from 2023-12-21 00-59-57](https://github.com/youssefshibl/eCommerce-nodejs/assets/63800183/d14dec91-5e92-43e7-a62e-765385661537)
+---
 
-✔️ make successfuly
-```json
-{
-  "success": true,
-  "data": {
-    "_id": "6491cb7b71c6d222c8abf2fe",
-    "name": "youssef1",
-    "email": "youssef1@gmail.com"
-  }
-}
-```
-❌ type of error can maked 
-```json
-{
-  "success": false,
-  "message": "you should verifyt you acount",
-  "code": 111
-}
-```
-📝 `delete` method `users/:id` should be `admin` & `auth` delete user  by id 
+### 🐸 Address API
+![Screenshot from 2023-12-21 01-00-13](https://github.com/youssefshibl/eCommerce-nodejs/assets/63800183/9a42c026-ce49-4825-b099-8b9b62417164)
 
-✔️ make  successfuly
-```jons
-{
-  "sucess": true,
-  "message": "use deleted success"
-}
-```
-❌ type of error can maked 
-```json 
-{
-  "sucess": false,
-  "message": "user not found"
-}
-```
-```json 
-{
-  "success": false,
-  "message": "this id is not valid"
-}
-```
-📝 `get` method `users/resendcode` send code of verification to your mail box
-✔️ make  successfuly
-```json
-{
-  "success": true,
-  "message": "check you email we send code to youssef1@gmail.com"
-}
-```
-📝 `post` method `users/verifyemail` send code to verify you email
 
-✔️ make  successfuly
-```json
-{
-  "success": true,
-  "data": {
-    "_id": "6491a75086a7b44c5ae9d15f",
-    "name": "youssef1",
-    "email": "youssef1@gmail.com",
-    "email_verify": true,
-    "isAdmin": false,
-    "street": "",
-    "apartment": "",
-    "zip": "",
-    "city": "",
-    "country": "",
-    "__v": 0
-  }
-}
+### 🐸 Category API
+
+![Screenshot from 2023-12-21 01-00-51](https://github.com/youssefshibl/eCommerce-nodejs/assets/63800183/68da5599-92b2-4ed7-a124-158b037e9168)
+
+---
+ ### 🐸 Product API
+
+ ![Screenshot from 2023-12-21 01-00-26](https://github.com/youssefshibl/eCommerce-nodejs/assets/63800183/25aa2ed4-47f2-4f9d-8707-ba30f7eb46b9)
+
+---
+
+### 🐸 Cart API
+
+![Screenshot from 2023-12-21 01-01-09](https://github.com/youssefshibl/eCommerce-nodejs/assets/63800183/750c855b-8e7b-417a-903b-f9097ca3c69b)
+
+---
+
+### 🐸 Order API
+
+![Screenshot from 2023-12-21 01-00-41](https://github.com/youssefshibl/eCommerce-nodejs/assets/63800183/1f155621-c8a4-495d-9725-e2d33092673a)
+
+
+---
+
+## How to run the project
+
+1. Clone the repo
+2. run `./start.sh` this will start docker container for mongodb and the nodejs server
+3. open `http://localhost:3000/ecommerce/v1/api-docs/` to see the swagger documentation 
+4. to run seed data run `./runseeds.sh` this will create a user and some categories and products in mongodb
+
+### important env variables
 ```
+API_URL=/ecommerce/v1 
+<!-- the base url for the api -->
+IP=0.0.0.0
+<!-- the ip for the server -->
+PORT=3000
+<!-- the port for the server -->
+secret=secrte
+<!-- the secret for jwt -->
+User=6ad3f083f82509
+<!-- the user for mailtrap -->
+Pass=216d5fd895c179
+<!-- the password for mailtrap -->
+EMAIL=test@gmail.com
+<!-- the email for mailtrap -->
+```
+---
+## 🐸 Logging system
+
+In this project i used morgan to log the requests as well as presistent logging in server.log file with details formated
+```
+172.20.0.1 - - [20/Dec/2023:23:14:22 +0000] "GET /ecommerce/v1/api-docs/favicon-32x32.png HTTP/1.1" 304 - "http://localhost:3000/ecommerce/v1/api-docs/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+172.20.0.1 - - [20/Dec/2023:23:14:41 +0000] "DELETE /ecommerce/v1/users/deleteuser/lkkk HTTP/1.1" 401 47 "http://localhost:3000/ecommerce/v1/api-docs/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+192.168.1.3 - - [20/Dec/2023:23:16:31 +0000] "GET / HTTP/1.1" 404 139 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36"
+```
+
+
 
 
 

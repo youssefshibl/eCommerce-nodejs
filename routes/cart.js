@@ -1,193 +1,131 @@
 const express = require("express");
 const router = express.Router();
 const auth_middleware = require("../middleware/auth");
-const Cart = require("../models/Cart");
-const Product = require("../models/Product");
+;
 const address = require("../models/Address");
 const mongoose = require("mongoose");
+const CartController = require("../controllers/Cart");
+// add product to cart
+
+
+/**
+ * @swagger
+ * /cart/addtocart:
+ *   post:
+ *     summary: Add a product to the user's cart
+ *     tags:
+ *       - Cart
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               product_id:
+ *                 type: string
+ *                 description: The ID of the product to add to the cart
+ *             example:
+ *               product_id: "60a7f8e9e8e9a7b8c9d7e6f5"
+ *     responses:
+ *       200:
+ *         description: Success'
+ *       400:
+ *         description: Bad Request
+ *       401:
+ *         description: Unauthorized
+ * 
+ */
+
 
 router.post("/addtocart", auth_middleware, async (req, res) => {
-  let product_id = req.body.product_id;
-  if (typeof product_id === "number") {
-    product_id = product_id.toString();
-  }
-  let user_id = req.user.id;
-  // get cart of user
-  let usercart = await Cart.findOne({ user_id: user_id }).populate(
-    "products.product_id"
-  );
-  if (!usercart) {
-    usercart = await Cart.create({ user_id: user_id });
-  }
-  // check if id is valid or not
-  if (!mongoose.Types.ObjectId.isValid(product_id)) {
-    res.status(400).send({
-      success: false,
-      message: "product id is not valid",
-    });
-    return;
-  }
-  let product = await Product.findById(String(product_id));
-  if (!product) {
-    res.status(400).send({
-      success: false,
-      message: "this product not found ",
-    });
-    return;
-  }
-  // check that if porduct is exit or not
-  let allproduct = usercart.products;
-  let indexporduct = allproduct.findIndex((element) => {
-    return element.product_id.id.toString() == product.id;
-  });
-  let newcart;
-  if (indexporduct >= 0) {
-    // update product to cart
-    newcart = await Cart.findOneAndUpdate(
-      { _id: usercart._id },
-      {
-        $set: {
-          [`products.${indexporduct}.quantity`]:
-            allproduct[indexporduct].quantity + 1,
-        },
-      },
-      { new: true }
-    ).populate("products.product_id");
-  } else {
-    //save product to cart
-    newcart = await Cart.findOneAndUpdate(
-      { _id: usercart._id },
-      {
-        $push: {
-          products: {
-            product_id: product,
-            quantity: 1,
-          },
-        },
-      },
-      { new: true }
-    ).populate("products.product_id");
-  }
-
-  res.send(newcart);
+return CartController.addtocart(req, res);
 });
 
+
+/**
+ * @swagger
+ * /cart/deletefromcart:
+ *   delete:
+ *     summary: Delete a product from the cart
+ *     description: Deletes a product from the user's cart based on the provided product ID.
+ *     tags:
+ *       - Cart
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               product_id:
+ *                 type: string
+ *                 description: The ID of the product to add to the cart
+ *             example:
+ *               product_id: "60a7f8e9e8e9a7b8c9d7e6f5"
+ * 
+ *     responses:
+ *       200:
+ *         description: Success'
+ *       400:
+ *         description: Bad Request
+ *       401:
+ *         description: Unauthorized
+ */
+
 // delete product form cart
-router.post("/deletefromcart", auth_middleware, async (req, res) => {
-  let product_id = req.body.product_id;
-  if (typeof product_id === "number") {
-    product_id = product_id.toString();
-  }
-  let user_id = req.user.id;
-  // get cart of user
-  let usercart = await Cart.findOne({ user_id: user_id }).populate(
-    "products.product_id"
-  );
-  if (!usercart) {
-    usercart = await Cart.create({ user_id: user_id });
-    res.status(400).send({
-      success: false,
-      message: "the cart not found befroe but maked ",
-    });
-    return;
-  }
-  if (!mongoose.Types.ObjectId.isValid(product_id)) {
-    res.status(400).send({
-      success: false,
-      message: "product id is not valid",
-    });
-    return;
-  }
-  let product = await Product.findById(String(product_id));
-  if (!product) {
-    res.status(400).send({
-      success: false,
-      message: "this product not found ",
-    });
-    return;
-  }
-  // check that if porduct is exit or not
-  let allproduct = usercart.products;
-  let indexporduct = allproduct.findIndex((element) => {
-    return element.product_id.id.toString() == product.id;
-  });
-  let newcart;
-  if (indexporduct >= 0) {
-    newcart = await Cart.findOneAndUpdate(
-      { _id: usercart._id },
-      {
-        $pull: {
-          products: {
-            $eq: allproduct[indexporduct],
-          },
-        },
-      },
-      { new: true }
-    ).populate("products.product_id");
-    res.status(200).send({
-      success: true,
-      data: newcart,
-    });
-    return;
-  } else {
-    res.status(400).send({
-      success: false,
-      message: "this product dont added before in cart",
-    });
-  }
+router.delete("/deletefromcart", auth_middleware, async (req, res) => {
+return CartController.deletefromcart(req, res);
 });
 
 // delete all product
 
-router.get("/clearcart", auth_middleware, async (req, res) => {
-  let user_id = req.user.id;
-  // get cart of user
-  let usercart = await Cart.findOne({ user_id: user_id }).populate(
-    "products.product_id"
-  );
-  if (!usercart) {
-    usercart = await Cart.create({ user_id: user_id });
-    res.status(400).send({
-      success: false,
-      message: "the cart not found befroe but maked ",
-    });
-    return;
-  }
+/**
+ * @swagger
+ * /cart/clearcart:
+ *   delete:
+ *     summary: Clear the user's cart
+ *     description: Clears all products from the user's cart.
+ *     tags:
+ *       - Cart
+ * 
+ *     responses:
+ *       200:
+ *         description: Success'
+ *       400:
+ *         description: Bad Request
+ *       401:
+ *         description: Unauthorized
+ */
 
-  let deletecart = await Cart.findOneAndUpdate(
-    { _id: usercart._id },
-    {
-      $set: {
-        products: [],
-      },
-    }
-  );
 
-  res.status(200).send("done");
+router.delete("/clearcart", auth_middleware, async (req, res) => {
+return CartController.clearcart(req, res);
 });
 
 // get all product in my cart
-router.get("/cartallproduct", auth_middleware, async (req, res) => {
-  let user_id = req.user.id;
-  // get cart of user
-  let usercart = await Cart.findOne({ user_id: user_id }).populate(
-    "products.product_id"
-  );
-  if (!usercart) {
-    usercart = await Cart.create({ user_id: user_id });
-    res
-      .status(400)
-      .send({
-        success: false,
-        message: "the cart not found befroe but maked ",
-      })
-      .populate("products.product_id");
-    return;
-  }
-  res.status(200).send({
-    success: true,
-    data: usercart.products,
-  });
+
+/**
+ * @swagger
+ * /cart/getallproduct:
+ *   get:
+ *     summary: Get all products in the user's cart
+ *     description: Retrieves all products in the user's cart.
+ *     tags:
+ *       - Cart
+ * 
+ *     responses:
+ *       200:
+ *         description: Success'
+ *       400:
+ *         description: Bad Request
+ *       401:
+ *         description: Unauthorized
+ * 
+ * 
+ */
+router.get("/getallproduct", auth_middleware, async (req, res) => {
+return CartController.getallproduct(req, res);
 });
 
 module.exports = router;

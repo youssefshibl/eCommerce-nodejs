@@ -78,6 +78,49 @@ router.post("/login", async (req, res) => {
   return await UserControll.login(req, res);
 });
 
+// edit user
+/**
+ * @swagger
+ * /users/edituser:
+ *   post:
+ *     tags:
+ *       - User
+ *     description: Use to edit a user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The user name
+ *                 default: ahmed
+ *               email:
+ *                 type: string
+ *                 description: The user email
+ *                 default:
+ *               password:
+ *                 type: string
+ *                 description: The user password
+ *                 default: ahmedeng123456
+ *               confirmPassword:
+ *                 type: string
+ *                 description: The user confirmPassword
+ *                 default: ahmedeng123456
+ *                 
+ *     responses:
+ *      '200':
+ *        description: A successful response * 
+ * 
+ */
+
+
+router.post("/edituser", auth_middleware, async (req, res) => {
+  return await UserControll.editUser(req, res);
+});
+
 // delete account
 /**
  * @swagger
@@ -228,5 +271,132 @@ router.post("/verifyemail", auth_middleware, async (req, res) => {
   return await UserControll.verifyEmail(req, res);
 });
 
-module.exports = router;
+// add address to user
+/**
+ * @swagger
+ * /users/addaddress:
+ *   post:
+ *     tags:
+ *       - Address
+ *     description: Use to add address to user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               address:
+ *                 type: string
+ *                 description: The user address
+ *                 default: 15 street elmahala
+ *               city:
+ *                 type: string
+ *                 description: The user city
+ *                 default: elmahala
+ *               postalCode:
+ *                 type: string
+ *                 description: The user postalCode
+ *                 default: 123456
+ *               country:
+ *                 type: string
+ *                 description: The user country
+ *                 default: eygpt
+ *     responses:
+ *       '200':
+ *         description: A successful response
+ */
 
+router.post("/addaddress", auth_middleware, async (req, res) => {
+  return await UserControll.addAddress(req, res);
+});
+
+
+// get all address for user
+/**
+ * @swagger
+ * /users/getaddress:
+ *   get:
+ *     tags:
+ *       - Address
+ *     description: Use to get all address for user
+ *     responses:
+ *       '200':
+ *         description: A successful response
+ */
+
+router.get("/getaddress", auth_middleware, async (req, res) => {
+  return await UserControll.getAddress(req, res);
+});
+
+// update address for user
+
+
+/**
+ * @swagger
+ * /users/updateaddress:
+ *   post:
+ *     tags:
+ *       - Address
+ *     summary: Update user address
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               address_id:
+ *                 type: string
+ *                 description: The address id
+ *                 default: 5f8f8a2f3e3d7b2a7c3b0d3c
+ *               address:
+ *                 type: string
+ *                 description: The user address
+ *                 default: 15 street elmahala
+ *               city:
+ *                 type: string
+ *                 description: The user city
+ *                 default: elmahala
+ *               postalCode:
+ *                 type: string
+ *                 description: The user postalCode
+ *                 default: 123456
+ *               country:
+ *                 type: string
+ *                 description: The user country
+ *                 default: eygpt
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ */
+
+router.post("/updateaddress", auth_middleware, async (req, res) => {
+  return await UserControll.updateAddress(req, res);
+});
+
+
+
+// delete address for user
+/**
+ * @swagger
+ * /users/deleteaddress/{id}:
+ *   delete:
+ *     tags:
+ *       - Address
+ *     description: Use to delete address for user
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The address ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: A successful response
+ */
+router.delete("/deleteaddress/:id", auth_middleware, async (req, res) => {
+  return await UserControll.deleteAddress(req, res);
+});
+module.exports = router;

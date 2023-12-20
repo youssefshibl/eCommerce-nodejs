@@ -1,0 +1,33 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    networks:
+      ecommerce:
+       ipv4_address: 172.20.0.3
+    environment:
+      - MONGO_IP=172.20.0.2
+
+  db:
+    image: mongo
+    ports:
+      - 27017:27017
+    networks:
+      ecommerce:
+       ipv4_address: 172.20.0.2
+
+networks:
+  ecommerce:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+

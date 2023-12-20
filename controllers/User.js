@@ -5,9 +5,12 @@ const bcrypt = require("bcryptjs");
 const auth_middleware = require("../middleware/auth");
 const email_verify_middleware = require("../middleware/verify_email");
 const User = require("../models/User");
+const Address = require("../models/Address");
 const EmailVerify = require("../models/EmailVerifyCode");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
+const { SHA1 } = require("crypto-js");
+const fetch = require("node-fetch").default;
 const transporter = nodemailer.createTransport({
   host: "sandbox.smtp.mailtrap.io",
   port: 2525,
@@ -68,6 +71,9 @@ async function register(req, res) {
   });
 
   user = await user.save();
+
+  // get user without password
+  user = await User.findById(user.id).select("-passwordHash");
 
   if (!user) return res.status(404).send("User cannot be created");
 
@@ -147,13 +153,46 @@ async function login(req, res) {
   return;
 }
 
-async function deleteAccount(req,res){
+async function editUser(req, res) {
+  let user_id = req.user.id;
+  let user = await User.findById(user_id);
+  if (!user) {
+    res.status(400).send({ success: false, message: "user not found" });
+    return;
+  }
+  if (req.body.name) {
+    user.name = req.body.name;
+  }
+  if (req.body.email) {
+    user.email = req.body.email;
+  }
+  if (req.body.password) {
+    user.passwordHash = bcrypt.hashSync(req.body.password, 10);
+  }
+  if (req.body.confirmPassword) {
+    if (req.body.password != req.body.confirmPassword) {
+      res.status(400).send({
+        success: false,
+        message: "password and confirm password not match",
+      });
+      return;
+    }
+  }
+  user = await user.save();
+  if (user) {
+    res.status(200).send({ success: true, data: user });
+  } else {
+    res.status(400).send({ success: false, message: "user not found" });
+  }
+}
+
+async function deleteAccount(req, res) {
   let user_id = req.user.id;
   let user = await User.findByIdAndRemove(user_id);
-  if(user){
-    res.status(200).send({success:true,message:"user deleted success"});
-  }else{
-    res.status(400).send({success:false,message:"user not found"});
+  if (user) {
+    res.status(200).send({ success: true, message: "user deleted success" });
+  } else {
+    res.status(400).send({ success: false, message: "user not found" });
   }
 }
 
@@ -277,9 +316,101 @@ async function verifyEmail(req, res) {
       message: "verified code is not correct",
     });
   }
-  return ;
+  return;
 }
 
+async function addAddress(req, res) {
+  if (!req.body.address) {
+    res.status(400).send({ success: false, message: "address is required" });
+    return;
+  }
+  if (!req.body.city) {
+    res.status(400).send({ success: false, message: "city is required" });
+    return;
+  }
+  if (!req.body.postalCode) {
+    res.status(400).send({ success: false, message: "postalCode is required" });
+    return;
+  }
+  if (!req.body.country) {
+    res.status(400).send({ success: false, message: "country is required" });
+    return;
+  }
+
+  let address = new Address({
+    address: req.body.address,
+    city: req.body.city,
+    postalCode: req.body.postalCode,
+    country: req.body.country,
+    user_id: req.user.id,
+  });
+
+  address = await address.save();
+
+  if (!address) return res.status(404).send("Address cannot be created");
+
+  res.status(200).send({
+    success: true,
+    data: address,
+  });
+}
+
+async function getAddress(req, res) {
+  let address = await Address.find({ user_id: req.user.id });
+  if (address) {
+    res.status(200).send({ success: true, data: address });
+  } else {
+    res.status(400).send({ success: false, message: "not found address" });
+  }
+}
+
+async function deleteAddress(req, res) {
+  let id = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(400).send({ success: false, message: "this id is not valid" });
+    return;
+  }
+  let address = await Address.findByIdAndRemove(id);
+  if (address) {
+    res.status(200).send({ sucess: true, message: "address deleted success" });
+  } else {
+    res.status(400).send({ sucess: false, message: "address not found" });
+  }
+}
+
+async function updateAddress(req, res) {
+  let id = req.body.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(400).send({ success: false, message: "this id is not valid" });
+    return;
+  }
+  let address = await Address.findById(id);
+  if (!address) {
+    res.status(400).send({ success: false, message: "address not found" });
+    return;
+  }
+  if (req.body.address) {
+    address.address = req.body.address;
+  }
+  if (req.body.city) {
+    address.city = req.body.city;
+  }
+  if (req.body.postalCode) {
+    address.postalCode = req.body.postalCode;
+  }
+  if (req.body.country) {
+    address.country = req.body.country;
+  }
+  address = await address.save();
+  if (address) {
+    res.status(200).send({ success: true, data: address });
+  } else {
+    res.status(400).send({ success: false, message: "address not found" });
+  }
+  return;
+}
+
+// --------------------- helper functions ---------------------
 async function isPasswordPwned(password) {
   const sha1pwd = await sha1(password);
   const head = sha1pwd.slice(0, 5);
@@ -299,13 +430,8 @@ async function isPasswordPwned(password) {
 }
 
 async function sha1(str) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(str);
-  const hashBuffer = await crypto.subtle.digest("SHA-1", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+  const hashHex = SHA1(str).toString();
+  console.log(hashHex);
   return hashHex.toUpperCase();
 }
 
@@ -334,11 +460,16 @@ function htmlTemplate(code) {
 module.exports = {
   register,
   login,
+  editUser,
   deleteUser,
   getUser,
   me,
   getAllUser,
   resendCode,
   verifyEmail,
-  deleteAccount
+  deleteAccount,
+  addAddress,
+  getAddress,
+  deleteAddress,
+  updateAddress,
 };

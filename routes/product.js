@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const Category = require("../models/Categories");
-const Product = require("../models/Product");
+const auth_middleware = require("../middleware/auth");
+const isAdmin = require("../middleware/isAdmin");
+
+const ProductController = require("../controllers/Product");
 
 // storeage to save file uploaded
 const storage = multer.diskStorage({
@@ -11,133 +13,176 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     let newfilename = `product-image-${Date.now()}-${file.originalname}`;
-    req.image_saved_name = newfilename ;
+    req.image_saved_name = newfilename;
     cb(null, newfilename); // Use the original file name as the filename
   },
 });
 const upload = multer({ storage: storage });
 
-// add product
-router.post("/addproduct", upload.single("image"), async (req, res) => {
-  debugger ;
-  let file = req.file;
-  let name = req.body.name;
-  let description = req.body.description;
-  let price = req.body.price;
-  let category_id = req.body.category_id;
-  let category = await Category.findById(category_id);
-  if (!category) {
-    res.status(200).send({
-      success: false,
-      message: "dont find this category",
-    });
-    return;
-  }
-  let product = new Product({
-    name: name,
-    description: description,
-    image: file ? req.image_saved_name : null,
-    price: price,
-    category: category_id,
-  });
+// add product add swagger doc
 
-  product = await product.save();
-  res.status(200).send({
-    success: true,
-    data: product,
-  });
+/**
+ * @swagger
+ * /product/addproduct:
+ *   post:
+ *     tags:
+ *      - Product
+ *     summary: Add a new product
+ *     description: Endpoint to add a new product
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The product name
+ *                 default: xbox
+ *               description:
+ *                 type: string
+ *                 description: The product description
+ *                 default: device for playing games
+ *               price:
+ *                 type: number
+ *                 description: The product price
+ *                 default: 1000
+ *               category_id:
+ *                 type: string
+ *                 description: The product category_id
+ *                 default: 5f8f8a2f3e3d7b2a7c3b0d3c
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *       400:
+ *         description: Bad request
+ */
+
+router.post("/addproduct", upload.single("image"), async (req, res) => {
+  return ProductController.addproduct(req, res);
 });
 
 // get all product
+
+/**
+ * @swagger
+ * /product/getallproducts:
+ *   get:
+ *     tags:
+ *      - Product
+ *     summary: Get products
+ *     description: Retrieve a list of products with optional category filtering
+ *     parameters:
+ *       - in: query
+ *         name: categories
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of category IDs to filter the products
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *       400:
+ *         description: Bad request
+ */
+
 router.get("/getallproducts", async (req, res) => {
-  // making filtering
-  let filter = {};
-  if (req.query.categories) {
-    filter = { category: req.query.categories.split(",") };
-  }
-  //console.log(filter)
-  let products = await Product.find(filter).populate("category");
-  res.status(200).send({
-    success: true,
-    data: products,
-  });
+  return ProductController.getallproducts(req, res);
 });
 
 // make product by id
+
+/**
+ * @swagger
+ * /product/getproduct/{id}:
+ *   get:
+ *     tags:
+ *      - Product
+ *     summary: Get a product by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the product
+ *         schema:
+ *           type: string
+ *           description: Retrieve a product by ID
+ *           default: 5f8f8a2f3e3d7b2a7c3b0d3c
+ *     responses:
+ *       200:
+ *         description: Successful response
+
+ *       400:
+ *         description: Invalid request or product not found
+
+ */
+
 router.get("/getproduct/:id", async (req, res) => {
-  let id = req.params.id;
-  if (!id) {
-    res.status(400).send({
-      success: false,
-      message: " missing id of product",
-    });
-    return;
-  }
-  let product = await Product.findById(id).populate("category");
-  if (!product) {
-    res.status(400).send({
-      success: false,
-      message: "this product not found",
-    });
-    return;
-  }
-  res.status(200).send({
-    success: true,
-    data: product,
-  });
+  return ProductController.getproduct(req, res);
 });
 
 // update product
-router.post("/updateproduct/:id", upload.single("image"), async (req, res) => {
-  let id = req.params.id;
-  if (!id) {
-    res.status(400).send({
-      success: false,
-      message: " missing id of product",
-    });
-    return;
-  }
-  // make check which updated
-  let update = {};
-  if (req.body.name) {
-    update.name = req.body.name;
-  }
-  if (req.body.price) {
-    update.price = req.body.price;
-  }
-  if (req.body.description) {
-    update.description = req.body.description;
-  }
-  if (req.body.category_id) {
-    update.category = await Category.findById(req.body.category_id);
-  }
-  if (req.file) {
-    update.image = req.file.filename;
-  }
-  let product = await Product.findByIdAndUpdate(id, update, { new: true });
-  res.send(product);
-});
 
-// delete product
-router.delete("/deleteproduct/:id", async (req, res) => {
-  let id = req.params.id;
-  if (!id) {
-    res.status(400).send({
-      success: false,
-      message: " missing id of product",
-    });
-    return;
+/**
+ * @swagger
+ * /product/updateproduct/{id}:
+ *   put:
+ *     tags:
+ *      - Product
+ *     summary: Update a product by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the product
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The product name
+ *                 default: xbox
+ *               description:
+ *                 type: string
+ *                 description: The product description
+ *                 default: device for playing games
+ *               price:
+ *                 type: number
+ *                 description: The product price
+ *                 default: 1000
+ *               category_id:
+ *                 type: string
+ *                 description: The product category_id
+ *                 default: 5f8f8a2f3e3d7b2a7c3b0d3c
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       400:
+ *         description: Invalid request or product not found
+ *         
+ */
+
+router.put(
+  "/updateproduct/:id",
+  auth_middleware,
+  isAdmin,
+  upload.single("image"),
+  async (req, res) => {
+    return ProductController.updateproduct(req, res);
   }
-  let product = await Product.findByIdAndDelete(id);
-  if (product) {
-    res.status(200).send({ success: true });
-  } else {
-    res.status(400).send({
-      success: false,
-      message: "cant find this category",
-    });
-  }
-});
+);
 
 // get count fo product
 router.get("/productcount", async (req, res) => {
@@ -148,14 +193,32 @@ router.get("/productcount", async (req, res) => {
   });
 });
 
-router.get("/testo" , (req ,res)=>{
-    
-    console.log(req.cookies)
-    res.status(200).send({
-        data: req.cookies,
-        success: true
-    })
 
-})
+// delete product
+
+/**
+ * @swagger
+ * /product/deleteproduct/{id}:
+ *   delete:
+ *     tags:
+ *      - Product
+ *     summary: Delete a product by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the product
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       400:
+ *         description: Invalid request or product not found
+ */
+
+router.delete("/deleteproduct/:id", auth_middleware, isAdmin, async (req, res) => {
+  return ProductController.deleteproduct(req, res);
+});
+
 module.exports = router;
-

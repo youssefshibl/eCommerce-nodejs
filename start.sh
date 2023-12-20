@@ -1,7 +1,20 @@
 #!/bin/bash
 
+# check if docker service is installed
+if ! [ -x "$(command -v docker)" ]; then
+  echo 'Error: docker is not installed.' >&2
+  exit 1
+fi
 
-# start mongodb container
-# docker run -d --name mongodb -p 27017:27017 -v /data/mongodb:/data/db mongo:3.4.2
+# check if docker service is running
+if ! [ "$(systemctl is-active docker)" = "active" ]; then
+  echo 'Error: docker service is not running.' >&2
+  exit 1
+fi
 
-docker run -d --rm --name mongodb -p 27017:27017 mongo
+
+
+
+
+# start compose file
+docker-compose up -d
